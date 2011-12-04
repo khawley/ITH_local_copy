@@ -1,0 +1,50 @@
+{%extends "teams.html"%}
+
+{%block title%}List of Teams{%endblock%}
+
+{%block main%}
+<h1>List of Teams on InsertTeamHere</h1>
+<!--  filtering..... -->
+<p><form action="/teams/" method="get"> {% csrf_token %}
+	<b>Filter by:</b>
+		{{ form.state }}{{form.project_type}}{{form.genre}}
+		<input type="submit" value"Filter" />
+	</form>
+</p>
+<!-- end filtering -->
+{% if latest_team_list %}
+	<table id="member_table">
+	{% for team in latest_team_list %}
+		{% if team.team_name %}
+			<tr><td><b><a href="/teams/{{ team.id }}/">{{ team.team_name }}</a></b><br>
+			{% if team.city or team.state != 'None' %}
+                {% if team.city %}
+                    {{team.city}}
+                {% endif %}
+                {% if team.city and team.state != 'None' %}, {%endif%}
+                {% if team.state %}
+                    {{team.state}}
+                {% endif %}<br>
+            {% endif %}
+            {% if team.project_type != 'None' or team.genre != 'None'%}
+                {% if team.project_type != 'None'%}
+                    {{team.project_type}}
+                {% endif %}
+                {% if team.genre != 'None' and team.project_type != 'None'%} - {% endif %}
+                {% if team.genre != 'None' %}
+                    {{team.genre}}
+                {% endif %}
+            {% endif %}
+            </td></tr>
+            
+		{% endif %}
+	{% endfor %}
+	</table>
+{% else %}
+	<p>No teams are available.</p>
+{% endif %}
+
+<a href="/teams/add">Create a new team</a>
+<p>
+{%endblock%}
+
